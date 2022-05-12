@@ -65,7 +65,7 @@ def get_app_layout():
             get_data_insights(),
             dbc.Row(
                 [
-                    dbc.Col(html.P("Created by Alexandra Ferreira and Hiba Hammi")),
+                    dbc.Col(html.P("Created by ")),
                     dbc.Col(get_source_text(), width="auto")
                 ],
                 justify="between",

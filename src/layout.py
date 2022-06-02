@@ -49,7 +49,7 @@ def get_map():
     return dbc.Row(
         dbc.Col(
             [
-                html.H2("Map", style={"margin-top": "1em"}), charts.map()       
+                html.H2("Map", style={"margin-top": "1em"}), charts.map()
             ],
         )
     )
@@ -61,7 +61,18 @@ def get_app_layout():
             html.H1(children='Gent Museum',
                     style={"margin-top": "1rem"}),
             get_app_description(),
-            get_map(),
+            html.Div([
+                dcc.DatePickerRange(
+                    id='my-date-picker-range',
+                    min_date_allowed=charts.get_min_date(),
+                    max_date_allowed=charts.get_max_date(),
+                    initial_visible_month=charts.get_min_date(),
+                    end_date=charts.get_max_date(),
+                    start_date=charts.get_min_date()
+                ),
+                html.Div(id='output-container-date-picker-range')
+            ]),
+            #get_map(),
             get_data_insights(),
             dbc.Row(
                 [
@@ -73,5 +84,3 @@ def get_app_layout():
         ],
         fluid=True
     )
-
-

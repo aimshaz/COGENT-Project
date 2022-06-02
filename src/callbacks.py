@@ -1,22 +1,22 @@
 from dash.dependencies import Input, Output, State
 import charts
+from datetime import datetime
+import pandas as pd
 
-#graph_A = charts.get_chart_A()
-#graph_A_bis = charts.get_chart_A_bis()
 
 def register_callbacks(app):
     """Function to register all callbacks from withing app.py
     Insert all your callback functions in the body of this function.
-    
-    e.g. 
-    
+
+    e.g.
+
     @app.callback(
     Output(component_id='my-output', component_property='children'),
     Input(component_id='my-input', component_property='value')
     )
     def update_output_div(input_value):
         return f'Output: {input_value}'
-        
+
     """
     """ @app.callback(
     Output('my-output', 'figure'),
@@ -27,3 +27,14 @@ def register_callbacks(app):
             return graph_A
         else:
             return graph_A_bis"""
+    @app.callback(
+    Output('output-container-date-picker-range', 'children'),
+    Input('my-date-picker-range', 'start_date'),
+    Input('my-date-picker-range', 'end_date'))
+
+    def update_output(start_date, end_date):
+        start_date_object = datetime.fromisoformat(start_date)
+        timestamp_start = pd.Timestamp(start_date_object)
+        end_date_object = datetime.fromisoformat(end_date)
+        timestamp_end = pd.Timestamp(end_date_object)
+        return charts.map(timestamp_start,timestamp_end)

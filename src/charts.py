@@ -18,7 +18,7 @@ columns = ['ID', 'Name_NL', 'Name_EN', 'Type', 'Lat', 'Lon', 'Date_Start', 'Date
 data = []
 all_start_dates = []
 all_end_dates = []
-    
+
 def collectDataEvents(row):
     coords = row['location'].split()
     lat = coords[2]
@@ -35,37 +35,30 @@ all_end_dates.sort()
 def getCoords(row):
     return [row['longitude'], row['latitude']]
 
-def filterData(new_start_date, new_end_date):
-    filteredDf = df_eventParsed.drop(df_eventParsed[df_eventParsed.Date_Start <= new_start_date].index)
-    filteredDf = filteredDf.drop(filteredDf[filteredDf.Date_End >= new_end_date].index)
+def get_min_date():
+    return df_eventParsed.Date_Start.min()
+
+def get_max_date():
+    return df_eventParsed.Date_End.max()
+
+def filterData(df_temp,new_start_date, new_end_date):
+    filteredDf = df_temp.drop(df_temp[df_temp.Date_Start > new_end_date].index)
+    filteredDf = filteredDf.drop(filteredDf[filteredDf.Date_End < new_start_date].index)
     return filteredDf
 
-def map():
-    #q1
+def map(new_start_date, new_end_date):
 
-    date_range_slider = pn.widgets.DateRangeSlider(
-        name='Date Range Slider',
-        start=all_start_dates[0], end=all_end_dates[len(all_end_dates)-1],
-        value=(all_start_dates[0], all_end_dates[len(all_end_dates)-1]),
-    )
+    df_temp = df_eventParsed
+    filteredDf = filterData(df_temp,new_start_date, new_end_date)
 
-    date_range_slider
-
-    new_start_date = date_range_slider.value[0]
-    new_end_date = date_range_slider.value[1]
-
-    filteredDf = filterData(new_start_date, new_end_date)
-    
     gent_map = json.load(open("../locaties-musea-gent.geojson"))
 
-    fig = px.choropleth_mapbox(filteredDf, geojson=gent_map, 
+    fig = px.choropleth_mapbox(filteredDf, geojson=gent_map,
                            mapbox_style="carto-positron",
                            zoom=12, center = {"lat": 51.049999, "lon": 3.733333},
                            opacity=0.5,
                           )
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-
-    #q2
     fig.add_trace(go.Scattermapbox(lat=filteredDf['Lat'], lon=filteredDf['Lon'], name="event information", mode = 'markers', hoverinfo = 'text', marker=dict(color='LightSkyBlue'),
         hovertext = '<b>Name</b>: '+ filteredDf['Name_EN'].astype(str) +'<br>'
                     '<b>Start Date</b>: '+ filteredDf['Date_Start'].astype(str) +'<br>'
@@ -74,10 +67,12 @@ def map():
 
         ,showlegend=True))
 
+
+
     fig.add_trace(go.Scattermapbox(lat=df_museumLocations['y'], lon=df_museumLocations['x'], name="museum information", mode = 'markers', hoverinfo = 'text', marker=dict(color='blueviolet'),
         hovertext = '<b>Name</b>: '+ df_museumLocations['naam'].astype(str) +'<br>'
         ,showlegend=True))
-    
+
     #q3
     fig.update_layout(legend=dict(yanchor="top", x=0))
 

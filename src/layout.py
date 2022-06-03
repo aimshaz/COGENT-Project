@@ -2,7 +2,10 @@ from dash import dcc
 import dash_bootstrap_components as dbc
 from dash import html
 import charts
+import pandas as pd
 
+df_events = pd.read_csv('../toeristische-evenementen-visit-gent1.csv', sep=";")
+#df_events=pd.DataFrame(df_events)
 
 def get_app_description():
     description_text = '''
@@ -70,7 +73,15 @@ def get_app_layout():
                     end_date=charts.get_max_date(),
                     start_date=charts.get_min_date()
                 ),
-                html.Div(id='output-container-date-picker-range')
+                html.Div(id='output-container-date-picker-range'),
+          
+                dcc.Dropdown(
+                              id='event_theme',
+                              options=[{'label': x,'value':x} for x in (sorted(df_events['Theme'].unique()))],
+                              value = sorted(df_events['Theme'].unique()),
+                              multi=True
+                          ),
+         
             ]),
             #get_map(),
             get_data_insights(),

@@ -7,14 +7,14 @@ import plotly.graph_objects as go
 import json
 
 import datetime as dt
-import panel as pn
+#import panel as pn
 
-pn.extension()
+#pn.extension()
 
 df_museumLocations = pd.read_csv('../locaties-musea-gent.csv', sep=";")
-df_events = pd.read_csv('../toeristische-evenementen-visit-gent.csv', sep=";")
+df_events = pd.read_csv('../toeristische-evenementen-visit-gent1.csv', sep=";")
 
-columns = ['ID', 'Name_NL', 'Name_EN', 'Type', 'Lat', 'Lon', 'Date_Start', 'Date_End', 'Link']
+columns = ['ID', 'Name_NL', 'Name_EN', 'Type', 'Lat', 'Lon', 'Date_Start', 'Date_End', 'Link', 'Theme']
 data = []
 all_start_dates = []
 all_end_dates = []
@@ -25,7 +25,7 @@ def collectDataEvents(row):
     lon = coords[1][1:]
     all_start_dates.append(dt.datetime(int(row['date_start'][0:4]), int(row['date_start'][5:7]), int(row['date_start'][8:10])))
     all_end_dates.append(dt.datetime(int(row['date_end'][0:4]), int(row['date_end'][5:7]), int(row['date_end'][8:10])))
-    data.append([row['identifier'], row['name_nl'], row['name_en'], 'EVENT', lat, lon, all_start_dates[len(all_start_dates)-1], all_end_dates[len(all_end_dates)-1], row['_event']])
+    data.append([row['identifier'], row['name_nl'], row['name_en'], 'EVENT', lat, lon, all_start_dates[len(all_start_dates)-1], all_end_dates[len(all_end_dates)-1], row['_event'], row['Theme']])
 df_events.apply(collectDataEvents, axis=1)
 
 df_eventParsed = pd.DataFrame(data, columns = columns)
@@ -41,15 +41,16 @@ def get_min_date():
 def get_max_date():
     return df_eventParsed.Date_End.max()
 
-def filterData(df_temp,new_start_date, new_end_date):
+def filterData(df_temp,new_start_date, new_end_date, theme):
     filteredDf = df_temp.drop(df_temp[df_temp.Date_Start > new_end_date].index)
     filteredDf = filteredDf.drop(filteredDf[filteredDf.Date_End < new_start_date].index)
+    filteredDf = filteredDf.loc[filteredDf['Theme'].isin(theme)]  
     return filteredDf
 
-def map(new_start_date, new_end_date):
+def map(new_start_date, new_end_date, theme):
 
     df_temp = df_eventParsed
-    filteredDf = filterData(df_temp,new_start_date, new_end_date)
+    filteredDf = filterData(df_temp,new_start_date, new_end_date, theme)
 
     gent_map = json.load(open("../locaties-musea-gent.geojson"))
 

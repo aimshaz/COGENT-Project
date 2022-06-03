@@ -30,11 +30,13 @@ def register_callbacks(app):
     @app.callback(
     Output('output-container-date-picker-range', 'children'),
     Input('my-date-picker-range', 'start_date'),
-    Input('my-date-picker-range', 'end_date'))
+    Input('my-date-picker-range', 'end_date'),
+    Input(component_id='event_theme', component_property='value'))
 
-    def update_output(start_date, end_date):
+    def update_output(start_date, end_date, theme):
         start_date_object = datetime.fromisoformat(start_date)
         timestamp_start = pd.Timestamp(start_date_object)
         end_date_object = datetime.fromisoformat(end_date)
         timestamp_end = pd.Timestamp(end_date_object)
-        return charts.map(timestamp_start,timestamp_end)
+        themeType=theme
+        return charts.map(timestamp_start,timestamp_end, themeType)

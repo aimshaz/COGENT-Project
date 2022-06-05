@@ -34,8 +34,8 @@ The GitHub repository contains all the additional documentation made for this pr
 * [The Persona](docs/Persona_Final.png)
 * [The Elevator Pitch PPT](docs/Elevator_Pitch.pptx)
 * [The Pitch Deck PPT](docs/Pitch_Deck.pptx)
-* The User Story Demo
-* Silent Unit Test Demo
+* The User Story Demo (docs/user_story_demo.mov)
+* Silent Unit Test Demo (https://youtu.be/ja6qR0R9Ouw)
 
 MAINTAINERS
 -----------

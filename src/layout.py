@@ -4,6 +4,7 @@ from dash import html
 import charts
 import pandas as pd
 import sys
+from datetime import datetime,timedelta
 
 df_events = pd.read_csv(sys.path[0] + '/data/toeristische_evenementen_visit_gent.csv', sep=";")
 #df_events=pd.DataFrame(df_events)
@@ -71,9 +72,9 @@ def get_app_layout():
                     id='my-date-picker-range',
                     min_date_allowed=charts.get_min_date(),
                     max_date_allowed=charts.get_max_date(),
-                    initial_visible_month=charts.get_min_date(),
-                    end_date=charts.get_max_date(),
-                    start_date=charts.get_min_date(),
+                    initial_visible_month=datetime.now().date(),
+                    end_date=datetime.now().date() + timedelta(days=1),
+                    start_date=datetime.now().date(),
                     style={'width':'100%', 'margin-top':'20px'}
                 ))], style={'margin-top':'5px', 'width': '49%', 'display': 'inline-block', "verticalAlign": "top"})], style={'margin':'auto', 'height':'200px', 'width': '60%', 'padding':'20px', 'border':'2px solid', 'border-color':'#E9E8E1', 'border-radius':'20px', 'background-color':'#F4F3ED', 'box-shadow': '5px 5px 2px -2px rgba(0, 0, 0, 0.1)'}),
             html.Div(id='output-container-date-picker-range'),
